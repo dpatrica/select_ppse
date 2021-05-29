@@ -1,7 +1,3 @@
-//
-// Created by neo on 28.05.2021.
-//
-
 #ifndef SP_H
 #define SP_H
 
@@ -9,6 +5,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int pars_sp(char *sp);
+char		**pars_sp(char *sp);
+size_t		ft_strlen(const char *str);
+int			ft_putstr_fd(char *s, int fd);
+int			ft_atoi(const char *str);
+int			ft_isdigit(int c);
+int			convert_16_10(int dig1, int dig2);
+char		*ft_strdup(const char *s1, int size);
+char		**add_first_array(void);
+char		**add_array(char **array, int i);
 
 #endif

@@ -1,7 +1,29 @@
 #include "sp.h"
 
-int main(void)
+int main(int argc, char **argv)
 {
-	char *sp = "6F39840E325041592E5359532E4444463031A527BF0C2461129F2A038106438701034F07A0000004320001610E8701024F09A000000658101033339000";
+	int i;
+	int n;
+	char **rid_pix;
+
+	rid_pix = NULL;
+	i = 1;
+	if (argc == 1)
+		return (ft_putstr_fd("Error!\nNo token.", 2));
+	while (--argc)
+	{
+		rid_pix = pars_sp(argv[i]);
+		n = -1;
+		while (rid_pix && rid_pix[++n])
+		{
+			printf("RID + PIX %d:\n%s\n", n + 1, rid_pix[n]);
+			free(rid_pix[n]);
+		}
+		if (rid_pix)
+			free(rid_pix);
+		write(1, "\n", 1);
+		i++;
+	}
+	write(1, "END\n", 4);
 	return (0);
 }

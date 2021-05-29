@@ -1,10 +1,26 @@
-//
-// Created by neo on 28.05.2021.
-//
-
 #include "sp.h"
 
-int pars_sp(char *sp)
+char **pars_sp(char *sp)
 {
-	return (0);
+	int i;
+	int count;
+	char **app_tem;
+
+	i = 0;
+	app_tem = add_first_array();
+	while (*sp)
+	{
+		count = 1;
+		if (*sp == '6' && *(sp + 1) == '1')
+		{
+			sp += 4;
+			count = (convert_16_10((int)*(sp - 2), (int)*(sp - 1))) * 2;
+			if (!app_tem[i])
+				app_tem = add_array(app_tem, i);
+			app_tem[i] = ft_strdup(sp, count);
+			i++;
+		}
+		sp += count;
+	}
+	return (app_tem);
 }
