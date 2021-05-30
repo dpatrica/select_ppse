@@ -25,3 +25,43 @@ char	**add_array(char **array, int i)
 	array[++k] = NULL;
 	return (array);
 }
+
+char	**delete_arr(char **array, int del)
+{
+	int i;
+	int j;
+	char **arr;
+
+	i = 0;
+	while (array[i])
+		i++;
+	if (i == 1)
+	{
+		free(array[0]);
+		free(array);
+		return (NULL);
+	}
+	arr = (char**)malloc(sizeof(char*) * i);
+	arr[i - 1] = NULL;
+	i = 0;
+	j = 0;
+	while (array[i])
+	{
+		if (i == del)
+			free(array[i++]);
+		else
+			arr[j++] = array[i++];
+	}
+	free(array);
+	return (arr);
+}
+
+char	**swap_array(char **array, int first, int last)
+{
+	char *temp;
+
+	temp = array[first];
+	array[first] = array[last];
+	array[last] = temp;
+	return (array);
+}
