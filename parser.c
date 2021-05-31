@@ -20,7 +20,7 @@ char **only_rid_pix(char **rid_pix)
 				free(rid_pix[i]);
 				rid_pix[i] = temp;
 			}
-			j++;
+			j += 2;
 		}
 		i++;
 	}
@@ -63,7 +63,7 @@ char **sort_rid_pix(char **rid_pix)
 				}
 				break ;
 			}
-			j++;
+			j += 2;
 		}
 		i++;
 	}
@@ -89,7 +89,7 @@ char **pars_valid_rid_pix(char **rid_pix)
 					search = 0;
 					break ;
 				}
-			j++;
+			j += 2;
 		}
 		if (!search)
 			rid_pix = delete_arr(rid_pix, i);
@@ -109,7 +109,7 @@ char **pars_application_template(char *sp)
 	app_tem = add_first_array();
 	while (*sp)
 	{
-		count = 1;
+		count = 2;
 		if (*sp == '6' && *(sp + 1) == '1')
 		{
 			sp += 4;
