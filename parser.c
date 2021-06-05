@@ -1,130 +1,120 @@
 #include "sp.h"
 
-char **only_rid_pix(char **rid_pix)
+static int pars_l(char **sp)
 {
-	int i;
-	int j;
+	int len;
+
+	if (convert_16_10((int)**sp) > 7)
+	{
+		(*sp)++;
+		if (convert_16_10((int)**sp) == 1)
+		{
+			len = two_convert_16_10((int)*(*sp + 1), (int)*(*sp + 2));
+			*sp += 3;
+		}
+		else if (convert_16_10((int)**sp) == 2)
+		{
+			len = three_convert_16_10((int)*(*sp + 1), (int)*(*sp + 2),
+										(int)*(*sp + 3), (int)*(*sp + 4));
+			*sp += 5;
+		}
+		else // FIXME нужно сделать адаптивную функцию перевода чисел (не точно)
+			len = 0;
+	}
+	else
+	{
+		len = two_convert_16_10((int)**sp, (int)*(*sp + 1));
+		*sp += 2;
+	}
+	return (len);
+}
+
+static char *pars_t(char **sp)
+{
+	int large_tag;
 	int size;
-	char *temp;
+	char *str;
 
-	i = 0;
-	while (rid_pix[i])
+	size = 2;
+	large_tag = is_large_tag(**sp, *(*sp + 1));
+	while (large_tag)
 	{
-		j = 0;
-		while (rid_pix[i][j])
-		{
-			if (rid_pix[i][j] == '4' && rid_pix[i][j + 1] == 'F')
-			{
-				size = (convert_16_10((int)rid_pix[i][j + 2], (int)rid_pix[i][j + 3])) * 2;
-				temp = ft_strdup(&rid_pix[i][j + 4], size);
-				free(rid_pix[i]);
-				rid_pix[i] = temp;
-			}
-			j += 2;
-		}
-		i++;
+		size += 2;
+		if (convert_16_10((int)*(*sp + (size - 2))) <= 7)
+			large_tag = 0;
 	}
-	return (rid_pix);
+	str = ft_strdup(*sp, size);
+	*sp += size;
+	return (str);
 }
 
-char **sort_rid_pix(char **rid_pix)
+static t_tlv *constructed_pars(char **sp, t_tlv *tlv, int bytes)
 {
 	int i;
-	int j;
-	int priority1;
-	int priority2;
+	int con_or_primitiv;
+	char *old_sp;
 
 	i = 0;
-	while (rid_pix[i])
+	while (**sp && bytes > 0)
 	{
-		j = 0;
-		while (rid_pix[i][j])
+		tlv = add_struct(tlv);
+		while (tlv[i].t)
+			i++;
+		con_or_primitiv = constructed_or_primitiv(**sp);
+		old_sp = *sp;
+		tlv[i].t = pars_t(sp);
+		bytes -= (*sp - old_sp);
+		old_sp = *sp;
+		tlv[i].l = pars_l(sp);
+		bytes -= (*sp - old_sp);
+		if (con_or_primitiv)
 		{
-			if (rid_pix[i][j] == '8' && rid_pix[i][j + 1] == '7')
-			{
-				if (!i)
-				{
-					priority1 = convert_16_10((int)rid_pix[i][j + 4], (int)rid_pix[i][j + 5]);
-					if (!priority1)
-						priority1 = 256;
-				}
-				else
-				{
-					priority2 = convert_16_10((int)rid_pix[i][j + 4], (int)rid_pix[i][j + 5]);
-					if (!priority2)
-						priority2 = 256;
-					if (priority1 > priority2)
-					{
-						rid_pix = swap_array(rid_pix, i - 1, i);
-						i = -1;
-					}
-					else
-						priority1 = priority2;
-				}
-				break ;
-			}
-			j += 2;
+			tlv[i].tlv = init_tlv();
+			tlv[i].tlv = constructed_pars(sp, tlv[i].tlv, tlv[i].l * 2);
 		}
-		i++;
-	}
-	return (rid_pix);
-}
-
-char **pars_valid_rid_pix(char **rid_pix)
-{
-	int i;
-	int j;
-	int search;
-
-	i = 0;
-	while (rid_pix && rid_pix[i])
-	{
-		j = 0;
-		search = 0;
-		while (rid_pix[i][j])
-		{
-			if (rid_pix[i][j] == '4' && rid_pix[i][j + 1] == 'F' && ++search)
-				if (ft_strncmp(&rid_pix[i][j + 4], "A000000658", 10))
-				{
-					search = 0;
-					break ;
-				}
-			j += 2;
-		}
-		if (!search)
-			rid_pix = delete_arr(rid_pix, i);
 		else
-			i++;
+		{
+			tlv[i].v = ft_strdup(*sp, tlv[i].l * 2);
+			*sp += tlv[i].l * 2;
+		}
+		bytes -= tlv[i].l * 2;
 	}
-	return (rid_pix);
+	return (tlv);
 }
 
-char **pars_application_template(char *sp)
+static t_tlv *pars(char *sp, t_tlv *tlv)
 {
 	int i;
-	int count;
-	char **app_tem;
+	int con_or_primitiv;
 
 	i = 0;
-	app_tem = add_first_array();
-	while (*sp)
+	while (*sp && ft_strncmp(sp, "9000", 4))
 	{
-		count = 2;
-		if (*sp == '6' && *(sp + 1) == '1')
-		{
-			sp += 4;
-			count = (convert_16_10((int)*(sp - 2), (int)*(sp - 1))) * 2;
-			if (!app_tem[i])
-				app_tem = add_array(app_tem, i);
-			app_tem[i] = ft_strdup(sp, count);
+		tlv = add_struct(tlv);
+		while (tlv[i].t)
 			i++;
+		con_or_primitiv = constructed_or_primitiv(*sp);
+		tlv[i].t = pars_t(&sp);
+		tlv[i].l = pars_l(&sp);
+		if (con_or_primitiv)
+		{
+			tlv[i].tlv = init_tlv();
+			tlv[i].tlv = constructed_pars(&sp, tlv[i].tlv, tlv[i].l * 2);
 		}
-		sp += count;
+		else
+		{
+			tlv[i].v = ft_strdup(sp, tlv[i].l * 2);
+			sp += tlv[i].l * 2;
+		}
 	}
-	if (!i)
-	{
-		free(app_tem);
-		app_tem = NULL;
-	}
-	return (app_tem);
+	return (tlv);
+}
+
+t_tlv *pars_tlv(char *sp)
+{
+	t_tlv *tlv;
+
+	tlv = init_tlv();
+	tlv = pars(sp, tlv);
+	return (tlv);
 }
