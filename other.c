@@ -27,55 +27,54 @@ void print_tlv(t_tlv *tlv, int spec)
 	{
 		if (tlv[i].v)
 		{
-			while (spec)
-			{
+			while (spec--)
 				write(1, "  ", 2);
-				spec--;
-			}
 			spec = old_spec;
 			printf("T: %s\n", tlv[i].t);
-			while (spec)
-			{
+			while (spec--)
 				write(1, "  ", 2);
-				spec--;
-			}
 			spec = old_spec;
 			printf("L: %d\n", tlv[i].l);
-			while (spec)
-			{
+			while (spec--)
 				write(1, "  ", 2);
-				spec--;
-			}
 			spec = old_spec;
 			printf("V: %s\n", tlv[i].v);
 		}
 		else
 		{
-			while (spec)
-			{
+			while (spec--)
 				write(1, "  ", 2);
-				spec--;
-			}
 			spec = old_spec;
 			printf("T: %s\n", tlv[i].t);
-			while (spec)
-			{
+			while (spec--)
 				write(1, "  ", 2);
-				spec--;
-			}
 			spec = old_spec;
 			printf("L: %d\n", tlv[i].l);
-			while (spec)
-			{
+			while (spec--)
 				write(1, "  ", 2);
-				spec--;
-			}
 			spec = old_spec;
-			printf("val:\n");
+			write(1, "val:\n", 5);
 			print_tlv(tlv[i].tlv, spec + 1);
 		}
 		i++;
 	}
+}
+
+void free_tlv(t_tlv *tlv)
+{
+	int i;
+
+	i = 0;
+	while (tlv[i].t)
+	{
+		free(tlv[i].t);
+		if (tlv[i].v)
+			free(tlv[i].v);
+		else
+			free_tlv(tlv[i].tlv);
+		i++;
+	}
+	free(tlv);
 }
 
 int len_array(char **array)

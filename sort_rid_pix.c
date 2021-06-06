@@ -4,9 +4,7 @@ static char **pars_value_87(t_tlv *tlv, char **rid_pix)
 {
 	int i;
 
-	i = 0;
-	while (rid_pix[i])
-		i++;
+	i = len_array(rid_pix);
 	if (i)
 		rid_pix[i - 1][0] = tlv->v[1];
 	return (rid_pix);
@@ -16,9 +14,7 @@ static char **pars_value_4f(t_tlv *tlv, char **rid_pix)
 {
 	int i;
 
-	i = 0;
-	while (rid_pix[i])
-		i++;
+	i = len_array(rid_pix);
 	if (i)
 		rid_pix[i - 1] = ft_strjoin(rid_pix[i - 1], tlv->v);
 	rid_pix = add_array(rid_pix, i);

@@ -18,7 +18,7 @@ static int pars_l(char **sp)
 										(int)*(*sp + 3), (int)*(*sp + 4));
 			*sp += 5;
 		}
-		else // FIXME нужно сделать адаптивную функцию перевода чисел (не точно)
+		else
 			len = 0;
 	}
 	else

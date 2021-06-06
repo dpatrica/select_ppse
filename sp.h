@@ -26,6 +26,7 @@ char		**sort_rid_pix(t_tlv *tlv);
 char		**sort_priority_rid_pix(char **rid_pix);
 int			len_array(char **array);
 char		**shift_left(char **rid_pix);
+void		free_tlv(t_tlv *tlv);
 char		*ft_strjoin(char *s1, char *s2);
 size_t		ft_strlen(const char *str);
 int			ft_putstr_fd(char *s, int fd);
@@ -34,7 +35,6 @@ char		*ft_strdup(const char *s1, int size);
 char		**add_first_array(void);
 char		**add_array(char **array, int i);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
-char		**delete_arr(char **array, int del);
 char		**swap_array(char **array, int first, int last);
 
 #endif
