@@ -67,12 +67,12 @@ char **sort_rid_pix(t_tlv *tlv)
 	{
 		if (!ft_strncmp(tlv[i].t, "61", 2))
 			rid_pix = app_tem_sort(tlv[i].tlv, rid_pix);
-		else
-		{
-			if (tlv[i].tlv->t)
+		else if (&(tlv[i].tlv->t))
 				rid_pix = sort_plus(tlv[i].tlv, rid_pix);
-		}
 	}
+	i = len_array(rid_pix);
+	free(rid_pix[--i]);
+	rid_pix[i] = NULL;
 	return (rid_pix);
 }
 
@@ -88,5 +88,7 @@ char **sort_priority_rid_pix(char **rid_pix)
 	for (int i = 0 ; i < len ; i++)
 		if (rid_pix[0][0] == '0')
 			rid_pix = shift_left(rid_pix);
+	for (int i = 0 ; i < len ; i++)
+		*(rid_pix[i])++ = '\0';
 	return (rid_pix);
 }

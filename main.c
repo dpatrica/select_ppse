@@ -16,5 +16,6 @@ int main(int argc, char **argv)
 	i = -1;
 	while (rid_pix[++i])
 		printf("%s\n", rid_pix[i]);
+//	while (1);
 	return (0);
 }
