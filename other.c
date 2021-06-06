@@ -77,3 +77,30 @@ void print_tlv(t_tlv *tlv, int spec)
 		i++;
 	}
 }
+
+int len_array(char **array)
+{
+	int i;
+
+	i = 0;
+	while (array[i])
+		i++;
+	return (i);
+}
+
+char **shift_left(char **rid_pix)
+{
+	int i;
+	char **temp;
+	int len_arr;
+
+	len_arr = len_array(rid_pix);
+	temp = (char**)malloc(sizeof(char*) * (len_arr + 1));
+	temp[len_arr] = NULL;
+	i = 0;
+	while (++i < len_arr)
+		temp[i - 1] = rid_pix[i];
+	temp[i - 1] = rid_pix[0];
+	free(rid_pix);
+	return (temp);
+}
