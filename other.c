@@ -7,9 +7,9 @@ int constructed_or_primitiv(int c)
 	return (0);
 }
 
-int is_large_tag(int dig1, int dig2)
+int is_large_tag(int c)
 {
-	if ((dig2 & 0b00001111) == 0b00001111 && (dig1 & 0b00000001))
+	if ((c & 0b00011111) == 0b00011111)
 		return (1);
 	return (0);
 }

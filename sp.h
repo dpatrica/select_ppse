@@ -16,7 +16,7 @@ typedef struct	s_tlv
 t_tlv		*init_tlv(void);
 t_tlv		*pars_tlv(char *sp);
 int			constructed_or_primitiv(int c);
-int			is_large_tag(int dig1, int dig2);
+int			is_large_tag(int c);
 int			convert_16_10(int dig);
 int			two_convert_16_10(int dig1, int dig2);
 int			three_convert_16_10(int dig1, int dig2, int dig3, int dig4);

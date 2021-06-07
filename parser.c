@@ -36,7 +36,7 @@ static char *pars_t(char **sp)
 	char *str;
 
 	size = 2;
-	large_tag = is_large_tag(convert_16_10((int)**sp), convert_16_10((int)*(*sp + 1)));
+	large_tag = is_large_tag(two_convert_16_10((int)**sp, (int)*(*sp + 1)));
 	while (large_tag)
 	{
 		size += 2;
