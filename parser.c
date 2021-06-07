@@ -36,7 +36,7 @@ static char *pars_t(char **sp)
 	char *str;
 
 	size = 2;
-	large_tag = is_large_tag(**sp, *(*sp + 1));
+	large_tag = is_large_tag(convert_16_10((int)**sp), convert_16_10((int)*(*sp + 1)));
 	while (large_tag)
 	{
 		size += 2;
@@ -60,7 +60,7 @@ static t_tlv *constructed_pars(char **sp, t_tlv *tlv, int bytes)
 		tlv = add_struct(tlv);
 		while (tlv[i].t)
 			i++;
-		con_or_primitiv = constructed_or_primitiv(**sp);
+		con_or_primitiv = constructed_or_primitiv(convert_16_10((int)**sp));
 		old_sp = *sp;
 		tlv[i].t = pars_t(sp);
 		bytes -= (*sp - old_sp);
@@ -93,7 +93,7 @@ static t_tlv *pars(char *sp, t_tlv *tlv)
 		tlv = add_struct(tlv);
 		while (tlv[i].t)
 			i++;
-		con_or_primitiv = constructed_or_primitiv(*sp);
+		con_or_primitiv = constructed_or_primitiv(convert_16_10((int)*sp));
 		tlv[i].t = pars_t(&sp);
 		tlv[i].l = pars_l(&sp);
 		if (con_or_primitiv)

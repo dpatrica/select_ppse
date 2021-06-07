@@ -2,16 +2,14 @@
 
 int constructed_or_primitiv(int c)
 {
-	if (c == '2' || c == '3' || c == '6' || c == '7' || c == 'A' || c == 'B' ||\
-	c == 'E' || c == 'F')
+	if (c & 0b000000010)
 		return (1);
 	return (0);
 }
 
 int is_large_tag(int dig1, int dig2)
 {
-	if (dig2 == 'F' && (dig1 == '1' || dig1 == '3' || dig1 == '5' || dig1 == '7' ||\
-	dig1 == '9' || dig1 == 'B' || dig1 == 'D' || dig1 == 'F'))
+	if ((dig2 & 0b00001111) == 0b00001111 && (dig1 & 0b00000001))
 		return (1);
 	return (0);
 }
